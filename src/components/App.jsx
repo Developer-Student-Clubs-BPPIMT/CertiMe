@@ -2,6 +2,10 @@ import React from 'react';
 import { Stage, Layer, Image, Rect, Transformer, Text } from 'react-konva';
 import useImage from 'use-image';
 
+
+const myName = "Aritra Bhattacharjee"
+const myCollege = "B.P Poddar Institute of Management and Technology"
+
 const Rectangle = ({ shapeProps, isSelected, onSelect, onChange }) => {
   const shapeRef = React.useRef();
   const trRef = React.useRef();
@@ -62,10 +66,11 @@ const Rectangle = ({ shapeProps, isSelected, onSelect, onChange }) => {
 
 const LoadedImage = ({url}) => {
   const [image] = useImage(url);
-  return <Image image={image} width={600} height={400}/>;
+  return <Image image={image} width={800} height={600}/>;
 };
 
 function App() {
+  const konvaStage = React.useRef(null);
   const [ saved, addSaved ] = React.useState([])
   const [ fieldValue, fieldChange ] = React.useState('')
   const [rectangle, setRectangle] = React.useState(null);
@@ -103,8 +108,9 @@ function App() {
   return (
     <div className="App" style={{display: 'grid', placeItems: 'center', minHeight: '100vh'}}>
     <Stage
-      width={600}
-      height={400}
+      ref={konvaStage}
+      width={800}
+      height={600}
     >
       <Layer>
         <LoadedImage url="assets/template.jpg" />
@@ -117,15 +123,14 @@ function App() {
                 onChange={(newAttrs) => setRectangle(newAttrs) }
               />
         }
-        </Layer>
-        <Layer>
           {saved.map(field => <Text 
               x={field.x}
               y={field.y}
               height={field.height}
               width={field.width}
-              fontSize="16"
-              text="This is an Example Text"
+              id={field.id}
+              fontSize={16}
+              text={field.id === 'name' ? myName : myCollege}
               align="center"
               verticalAlign="middle"
             />)
@@ -134,6 +139,7 @@ function App() {
       </Stage>
       <input type="text" onChange={(e) => fieldChange(e.target.value) } placeholder={fieldValue} />
       { selected ? <button onClick={saveFieldHandler}>Save Field</button> : <button onClick={addFieldHandler}>New Field</button> }
+      {/* <a href={konvaStage.current.toDataURL({ pixelRatio: 3 })} download="w3logo">Download</a> */}
     </div>
   );
 }

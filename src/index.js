@@ -3,10 +3,20 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './components/App.jsx';
 import reportWebVitals from './reportWebVitals';
+import { Provider } from 'react-redux';
+import { store, rrfProps } from './redux/store'
+import { ReactReduxFirebaseProvider } from 'react-redux-firebase';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+      <Provider store={store}>
+      <ReactReduxFirebaseProvider {...rrfProps}>
+          <Router>
+            <App />
+          </Router>
+        </ReactReduxFirebaseProvider>
+      </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

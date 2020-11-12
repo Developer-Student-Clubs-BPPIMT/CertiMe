@@ -3,15 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^4.11.0",
+    "firebase": "^8.0.1",
+    "konva": "^7.1.6",
+    "react-konva": "^17.0.0-0",
+    "react-redux-firebase": "^3.7.0",
+    "react-router-dom": "^5.2.0",
+    "redux-firestore": "^0.14.0",
+    "use-image": "^1.0.6"
+  },
+  "devDependencies": {
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
-    "konva": "^7.1.6",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "react-konva": "^17.0.0-0",
     "react-scripts": "4.0.0",
-    "use-image": "^1.0.6",
     "web-vitals": "^0.2.4"
   },
   "scripts": {
