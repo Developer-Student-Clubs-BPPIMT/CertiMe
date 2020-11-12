@@ -1,5 +1,5 @@
 import React from 'react';
-import { Stage, Layer, Image, Rect, Transformer } from 'react-konva';
+import { Stage, Layer, Image, Rect, Transformer, Text } from 'react-konva';
 import useImage from 'use-image';
 
 const Rectangle = ({ shapeProps, isSelected, onSelect, onChange }) => {
@@ -8,7 +8,6 @@ const Rectangle = ({ shapeProps, isSelected, onSelect, onChange }) => {
 
   React.useEffect(() => {
     if (isSelected) {
-      // we need to attach transformer manually
       trRef.current.nodes([shapeRef.current]);
       trRef.current.getLayer().batchDraw();
     }
@@ -31,22 +30,16 @@ const Rectangle = ({ shapeProps, isSelected, onSelect, onChange }) => {
           });
         }}
         onTransformEnd={(e) => {
-          // transformer is changing scale of the node
-          // and NOT its width or height
-          // but in the store we have only width and height
-          // to match the data better we will reset scale on transform end
           const node = shapeRef.current;
           const scaleX = node.scaleX();
           const scaleY = node.scaleY();
 
-          // we will reset it back
           node.scaleX(1);
           node.scaleY(1);
           onChange({
             ...shapeProps,
             x: node.x(),
             y: node.y(),
-            // set minimal value
             width: Math.max(5, node.width() * scaleX),
             height: Math.max(node.height() * scaleY),
           });
@@ -56,7 +49,6 @@ const Rectangle = ({ shapeProps, isSelected, onSelect, onChange }) => {
         <Transformer
           ref={trRef}
           boundBoxFunc={(oldBox, newBox) => {
-            // limit resize
             if (newBox.width < 5 || newBox.height < 5) {
               return oldBox;
             }
@@ -67,25 +59,6 @@ const Rectangle = ({ shapeProps, isSelected, onSelect, onChange }) => {
     </React.Fragment>
   );
 };
-
-// const initialRectangles = [
-//   {
-//     x: 10,
-//     y: 10,
-//     width: 100,
-//     height: 100,
-//     fill: 'red',
-//     id: 'rect1',
-//   },
-//   {
-//     x: 150,
-//     y: 150,
-//     width: 100,
-//     height: 100,
-//     fill: 'green',
-//     id: 'rect2',
-//   },
-// ];
 
 const LoadedImage = ({url}) => {
   const [image] = useImage(url);
@@ -104,10 +77,10 @@ function App() {
 
   const addFieldHandler = () => {
     setRectangle({
-      x: 200,
-      y: 300,
+      x: 100,
+      y: 200,
       width: 200,
-      height: 100,
+      height: 30,
       fill: 'red',
       id: 'rect1',
     })
@@ -144,6 +117,19 @@ function App() {
                 onChange={(newAttrs) => setRectangle(newAttrs) }
               />
         }
+        </Layer>
+        <Layer>
+          {saved.map(field => <Text 
+              x={field.x}
+              y={field.y}
+              height={field.height}
+              width={field.width}
+              fontSize="16"
+              text="This is an Example Text"
+              align="center"
+              verticalAlign="middle"
+            />)
+          }
         </Layer>
       </Stage>
       <input type="text" onChange={(e) => fieldChange(e.target.value) } placeholder={fieldValue} />
