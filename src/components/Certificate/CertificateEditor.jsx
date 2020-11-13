@@ -5,15 +5,14 @@ import LoadedImage from './LoadedImage'
 import TransformerRectangle from './TransformerRectangle'
 
 
-const CerificateCreator = ({ templateURL, rectangleProps, rectanglePropsHandler, isSelected, setSelected }) => {
+const CertificateEditor = ({ templateURL, rectangleProps, rectanglePropsHandler, isSelected, setSelected }) => {
     return (
         <Stage
         width={800}
         height={600}
       >
         <Layer>
-          <LoadedImage url="assets/template.jpg" />
-  
+          <LoadedImage url={templateURL} />
           { isSelected &&  
                 <TransformerRectangle
                   shapeProps={rectangleProps}
@@ -27,4 +26,4 @@ const CerificateCreator = ({ templateURL, rectangleProps, rectanglePropsHandler,
     )
 }
 
-export default CerificateCreator;
+export default CertificateEditor;

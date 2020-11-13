@@ -7,14 +7,18 @@ import { Provider } from 'react-redux';
 import { store, rrfProps } from './redux/store'
 import { ReactReduxFirebaseProvider } from 'react-redux-firebase';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { ThemeProvider } from '@material-ui/core'
+import theme from './config/theme'
 
 ReactDOM.render(
   <React.StrictMode>
       <Provider store={store}>
-      <ReactReduxFirebaseProvider {...rrfProps}>
-          <Router>
-            <App />
-          </Router>
+        <ReactReduxFirebaseProvider {...rrfProps}>
+          <ThemeProvider theme={theme}>
+            <Router>
+              <App />
+            </Router>
+          </ThemeProvider>
         </ReactReduxFirebaseProvider>
       </Provider>
   </React.StrictMode>,

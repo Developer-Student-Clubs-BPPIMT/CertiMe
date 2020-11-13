@@ -1,9 +1,9 @@
 import firebase from '../config/firebase'
 import { createStore, combineReducers } from 'redux'
-import {
-  firebaseReducer
-} from 'react-redux-firebase'
+import { firebaseReducer } from 'react-redux-firebase'
 import { createFirestoreInstance, firestoreReducer } from 'redux-firestore'
+
+import CertificateReducer from './reducers/certificate'
 
 
 
@@ -13,12 +13,13 @@ const rrfConfig = {
   useFirestoreForProfile: true
 }
 
-
+console.log("Certi", CertificateReducer)
 
 // Firebase to reducers
 const rootReducer = combineReducers({
   firebase: firebaseReducer,
-  firestore: firestoreReducer
+  firestore: firestoreReducer,
+  certificate: CertificateReducer
 })
 
 // Creating store with reducers and initial state
