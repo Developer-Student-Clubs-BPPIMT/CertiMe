@@ -9,7 +9,8 @@ import { useSelector } from 'react-redux'
 
 const CertificateGenerator = () => {
     const stageRef = React.useRef(null)
-    const [ fieldData, setFieldData ] = React.useState({ name: 'Aritra' })
+    const downloadRef = React.useRef(null)
+    const [ fieldData, setFieldData ] = React.useState({ })
     const [ textLayer, renderTextLayer ] = React.useState(<Layer></Layer>)
     const certificate = useSelector(state => state.certificate)
     const data = certificate.fields;
@@ -20,7 +21,12 @@ const CertificateGenerator = () => {
         setFieldData(temp)
         console.log(fieldData)
     }
-
+    const downloadHandler = () => {
+        let a = document.createElement('A');
+        a.href = stageRef.current.toDataURL()
+        a.download = 'certificate.png'
+        a.click();
+    }
     const renderHandler = () => {
         renderTextLayer(<Layer>
             {data.map(field => <Text 
@@ -72,6 +78,8 @@ const CertificateGenerator = () => {
                 )
             })}
             <button onClick={renderHandler}>Preview</button>
+            <button onClick={downloadHandler}>Download</button>
+
         </div>
     )
 }

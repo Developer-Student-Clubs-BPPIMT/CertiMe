@@ -1,6 +1,6 @@
 const Landing = () => {
     return (
-        <div>Landing</div>
+        <h1>Please Login</h1>
     )
 }
 
