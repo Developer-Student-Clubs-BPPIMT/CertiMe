@@ -6,7 +6,7 @@ import { isLoaded, isEmpty } from 'react-redux-firebase'
 
 import Home from './Home'
 import Landing from './Landing'
-import CertificateCreator from './creator/CertificateCreator'
+import CertificateCreator from './CertificateCreator'
 import Loader from '../components/common/Loader';
 
 function PrivateRoute({...props}){

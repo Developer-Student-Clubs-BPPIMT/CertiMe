@@ -1,0 +1,21 @@
+.FloatingBar{
+    padding: .5em .1em;
+    background: white;
+    border-radius: 29px;
+    height: 36px;
+    box-shadow: 1px 2px 4px 1px rgba(190, 190, 190, 0.692);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: width .5s;
+}
+
+
+.FloatBarContainer{
+    display: flex;
+    position: fixed;
+    justify-content: center;
+    width: 100vw;
+    bottom: 5%;
+}
+

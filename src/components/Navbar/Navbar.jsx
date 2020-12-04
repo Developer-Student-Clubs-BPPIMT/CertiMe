@@ -3,12 +3,11 @@ import {
     Toolbar,
     IconButton,
     Grid,
-    Typography,
     makeStyles,
     Button,
 } from '@material-ui/core'
 import { useSelector } from 'react-redux'
-import { useFirebase, isLoaded, isEmpty } from 'react-redux-firebase'
+import { useFirebase } from 'react-redux-firebase'
 import MenuIcon from '@material-ui/icons/Menu';
 
 const useStyles = makeStyles((theme) => ({
