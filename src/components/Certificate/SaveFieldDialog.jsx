@@ -9,11 +9,13 @@ import {
     DialogTitle,
   } from '@material-ui/core'
 
-const SaveFieldDiaglog = ({ saveFieldHandler, activeDialog, closeDialogHandler }) => {
-    const [ fieldValue, fieldChange ] = React.useState('')
+const SaveFieldDiaglog = ({ saveFieldHandler, activeDialog, closeDialogHandler, placeholder }) => {
+    const [ fieldValue, fieldChange ] = React.useState()
     const theme = useTheme()
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-
+    React.useEffect(() => {
+        fieldChange(placeholder)
+    }, [])
     return(
         <Dialog fullScreen={fullScreen}
         open={activeDialog}
@@ -22,7 +24,7 @@ const SaveFieldDiaglog = ({ saveFieldHandler, activeDialog, closeDialogHandler }
       >
         <DialogTitle id="responsive-dialog-title">{"Enter the Field Name"}</DialogTitle>
         <DialogContent>
-          <input type="text" onChange={(e) => fieldChange(e.target.value) } placeholder={fieldValue} />
+          <input type="text" onChange={(e) => fieldChange(e.target.value) } placeholder={"Enter Field Name"} value={fieldValue}/>
         </DialogContent>
         <DialogActions>
               <Button autoFocus onClick={closeDialogHandler} color="primary">

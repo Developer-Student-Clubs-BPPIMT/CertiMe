@@ -5,7 +5,7 @@ import KonvaImage from '../common/KonvaImage'
 import TransformerRectangle from './TransformerRectangle'
 
 
-const CertificateEditor = ({ templateURL, rectangleProps, rectanglePropsHandler, isSelected, setSelected, updateFieldHandler, certificateFields  }) => {
+const CertificateEditor = ({ templateURL, rectangleProps, rectanglePropsHandler, isSelected, updateFieldHandler, certificateFields  }) => {
   const [ rectangleLayer, renderRectangleLayer ] = React.useState(<Layer></Layer>)
   React.useEffect(() => {
     renderRectangleLayer(<Layer>
@@ -35,7 +35,7 @@ const CertificateEditor = ({ templateURL, rectangleProps, rectanglePropsHandler,
                 <TransformerRectangle
                   shapeProps={rectangleProps}
                   isSelected={isSelected}
-                  onSelect={() => setSelected(true) }
+                  // onSelect={() => setSelected(true) }
                   onChange={(newAttrs) => rectanglePropsHandler(newAttrs) }
                 />
           }
