@@ -64,7 +64,7 @@ const CertificateCreator = () => {
         type:'UPDATE_CERTIFICATE', 
         data:{ 
           name: 'not-sample', 
-          image: 'assets/WhiteSur.jpg',
+          image: 'assets/template.jpg',
           fields: fields
         }
       })
@@ -82,7 +82,7 @@ const CertificateCreator = () => {
         type:'UPDATE_CERTIFICATE', 
         data:{ 
           name: 'not-sample', 
-          image: 'assets/WhiteSur.jpg',
+          image: 'assets/template.jpg',
           fields: fields
         }
       })
@@ -125,11 +125,6 @@ const CertificateCreator = () => {
         title: 'Delete',
         action: deleteFieldHandler,
         icon: <DeleteIcon />
-      },
-      {
-        title: 'Save',
-        action: () => {console.log("save")},
-        icon: <SaveIcon />
       },
     ]
 
