@@ -46,6 +46,7 @@ const TransformerRectangle = ({ shapeProps, isSelected, onSelect, onChange }) =>
         />
         {isSelected && (
           <Transformer
+            rotateEnabled={false}
             ref={trRef}
             boundBoxFunc={(oldBox, newBox) => {
               if (newBox.width < 5 || newBox.height < 5) {

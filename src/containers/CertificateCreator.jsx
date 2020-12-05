@@ -1,18 +1,12 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import {
-  useMediaQuery,
   Container, 
-  Button,
-  Dialog,
-  DialogContent,
-  DialogActions,
-  DialogTitle,
   Card,
   Typography,
   CardContent
 } from '@material-ui/core'
-import { useTheme } from '@material-ui/core/styles';
+
 
 import CerificateCreator from '../components/Certificate/CertificateEditor';
 import CertificateGenerator from '../components/Certificate/CertificateGenerator'
@@ -24,20 +18,18 @@ import AddIcon from '@material-ui/icons/Add';
 import DoneIcon from '@material-ui/icons/Done';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import SaveIcon from '@material-ui/icons/Save';
+import SaveFieldDiaglog from '../components/Certificate/SaveFieldDialog';
 
 const CertificateCreator = () => {
-    const theme = useTheme()
     const stageRef = React.useRef(null)
     const [ fieldData, setFieldData ] = React.useState({ })
     const dispatch = useDispatch()
     const certificateFields = useSelector(state => state.certificate.fields)
     const [ editor, setView ] = React.useState(true)
     const [ error, setError ] = React.useState('')
-    const [ fieldValue, fieldChange ] = React.useState('')
     const [ rectangle, setRectangle] = React.useState(null);
     const [ selected, setSelected ] = React.useState(null);
     const [ activeDialog, setDialog ] = React.useState(false)
-    const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
 
     const addFieldHandler = () => {
@@ -51,35 +43,54 @@ const CertificateCreator = () => {
       setSelected(true)
     }
 
-    const openDialogHandler = () => setDialog(true)
+    const openDialogHandler = () => {
+      // console.log()
+      setDialog(true)
+    }
     const closeDialogHandler = () => setDialog(false)
 
-    const saveFieldHandler = () => {
+    const saveFieldHandler = (fieldValue) => {
       if(fieldValue === ''){
         setError('Enter a Field Name')
         return;
+      }
+      const fields = { ...certificateFields }
+      fields[fieldValue] = {
+        x: rectangle.x,
+        y: rectangle.y,
+        width: rectangle.width,
+        height: rectangle.height,
+        id: fieldValue
       }
       dispatch({
         type:'UPDATE_CERTIFICATE', 
         data:{ 
           name: 'not-sample', 
           image: 'assets/WhiteSur.jpg',
-          fields: [...certificateFields, {
-            x: rectangle.x,
-            y: rectangle.y,
-            width: rectangle.width,
-            height: rectangle.height,
-            id: fieldValue
-          }]
+          fields: fields
         }
       })
       setSelected(null)
       setRectangle(null)
-      fieldChange('')
       
       let temp = fieldData;
       setFieldData(temp)
       setDialog(false)
+    }
+
+    const updateFieldHandler = (field) => {
+      const fields = { ...certificateFields }
+      delete fields[field.id]
+      dispatch({
+        type:'UPDATE_CERTIFICATE', 
+        data:{ 
+          name: 'not-sample', 
+          image: 'assets/WhiteSur.jpg',
+          fields: fields
+        }
+      })
+      setRectangle({ ...field, fill: "red"})
+      setSelected(true)
     }
 
     const options = [
@@ -95,10 +106,6 @@ const CertificateCreator = () => {
       },
     ]
 
-    React.useEffect(() => fieldChange(''), [])
-    
-
-
     const downloadHandler = () => {
       console.log("Downloading..")
       let a = document.createElement('A');
@@ -112,14 +119,14 @@ const CertificateCreator = () => {
       const temp = fieldData;
       temp[event.target.name] = event.target.value;
       setFieldData(temp)
-      // renderHandler()
     }
 
     return(
       <Container disableGutters style={{display: 'flex', justifyContent: 'center'}}>
         <div>
-            { editor ? <CerificateCreator templateURL="assets/template.jpg" rectangleProps={rectangle} rectanglePropsHandler={setRectangle} isSelected={selected} setSelected={setSelected}/> : <CertificateGenerator stageRef={stageRef} fieldData={fieldData}/> }
-              { certificateFields.map(field => {
+            { editor ? <CerificateCreator templateURL="assets/template.jpg" rectangleProps={rectangle} rectanglePropsHandler={setRectangle} isSelected={selected} setSelected={setSelected} certificateFields={certificateFields} updateFieldHandler={updateFieldHandler}/> : <CertificateGenerator stageRef={stageRef} fieldData={fieldData}/> }
+              { Object.keys(certificateFields).map(field_id => {
+                const field = certificateFields[field_id] 
                 return (
                   <Card>
                     <CardContent>
@@ -134,27 +141,9 @@ const CertificateCreator = () => {
               title: 'Add Field',
               icon: selected ? <DoneIcon style={{ color: 'green'}}/> : <AddIcon />,
               action: selected ? openDialogHandler : addFieldHandler,
-              disabled: selected && fieldValue === "",
+              disabled: selected
             }}/>
-            <Dialog fullScreen={fullScreen}
-              open={activeDialog}
-              onClose={() => setDialog(false)}
-              aria-labelledby="responsive-dialog-title"
-            >
-              <DialogTitle id="responsive-dialog-title">{"Enter the Field Name"}</DialogTitle>
-              <DialogContent>
-                <input type="text" onChange={(e) => fieldChange(e.target.value) } placeholder={fieldValue} />
-              </DialogContent>
-              <DialogActions>
-                    <Button autoFocus onClick={() => setDialog(false)} color="primary">
-                      Back
-                    </Button>
-                    <Button onClick={saveFieldHandler} disabled={fieldValue === ''} color="primary" autoFocus>
-                      Save Field
-                    </Button>
-              </DialogActions>
-            </Dialog>
-
+          <SaveFieldDiaglog saveFieldHandler={saveFieldHandler} activeDialog={activeDialog} closeDialogHandler={closeDialogHandler}/>
       </Container>
     )
 }

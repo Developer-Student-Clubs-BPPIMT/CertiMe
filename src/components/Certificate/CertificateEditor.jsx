@@ -1,18 +1,36 @@
 import React from 'react'
-import { Layer, Stage } from 'react-konva'
+import { Layer, Stage, Rect} from 'react-konva'
 
-import LoadedImage from './LoadedImage'
+import KonvaImage from '../common/KonvaImage'
 import TransformerRectangle from './TransformerRectangle'
 
 
-const CertificateEditor = ({ templateURL, rectangleProps, rectanglePropsHandler, isSelected, setSelected }) => {
+const CertificateEditor = ({ templateURL, rectangleProps, rectanglePropsHandler, isSelected, setSelected, updateFieldHandler, certificateFields  }) => {
+  const [ rectangleLayer, renderRectangleLayer ] = React.useState(<Layer></Layer>)
+  React.useEffect(() => {
+    renderRectangleLayer(<Layer>
+        { Object.keys(certificateFields).map(field_id => {
+            const field = certificateFields[field_id]
+            return (<Rect 
+                key={field.id}
+                x={field.x}
+                y={field.y}
+                height={field.height}
+                width={field.width}
+                id={field.id}
+                fill="red"
+                onClick={() => { !isSelected && updateFieldHandler(field)}}
+            />)})}
+    </Layer>)
+    console.log(certificateFields)
+}, [certificateFields, isSelected, updateFieldHandler])
     return (
         <Stage
         width={800}
         height={600}
       >
         <Layer>
-          <LoadedImage url={templateURL} />
+          <KonvaImage url={templateURL} />
           { isSelected &&  
                 <TransformerRectangle
                   shapeProps={rectangleProps}
@@ -22,6 +40,7 @@ const CertificateEditor = ({ templateURL, rectangleProps, rectanglePropsHandler,
                 />
           }
           </Layer>
+          { rectangleLayer }
         </Stage>
     )
 }
