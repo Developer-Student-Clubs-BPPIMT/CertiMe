@@ -1,4 +1,6 @@
 import React from 'react';
+import {useDropzone} from 'react-dropzone';
+
 import { useDispatch, useSelector } from 'react-redux'
 import {
   Container, 
@@ -31,8 +33,17 @@ const CertificateCreator = () => {
     const [ error, setError ] = React.useState('')
     const [ rectangle, setRectangle] = React.useState(null);
     const [ activeDialog, setDialog ] = React.useState(false)
+    const {acceptedFiles, getRootProps, getInputProps} = useDropzone();
+    const [imgFile,setImgFile] = React.useState('');
 
-
+    const files = acceptedFiles.map(file => (
+      
+      <li key={file.path}>
+        
+        {file.path} - {file.size} bytes
+       
+      </li>
+    ));
 
     const openDialogHandler = () => setDialog(true)
     const closeDialogHandler = () => setDialog(false)
@@ -144,6 +155,7 @@ const CertificateCreator = () => {
   //   }
 
     return(
+      <>
       <Container disableGutters style={{display: 'flex', justifyContent: 'center'}}>
         <div>
             { editor ? <CerificateCreator templateURL="assets/template.jpg" rectangleProps={rectangle} rectanglePropsHandler={setRectangle} isSelected={rectangle !== null} certificateFields={certificateFields} updateFieldHandler={updateFieldHandler}/> : <CertificateGenerator stageRef={stageRef} fieldData={fieldData}/> }
@@ -166,7 +178,22 @@ const CertificateCreator = () => {
               disabled: rectangle !== null
             }}/>
           <SaveFieldDiaglog saveFieldHandler={saveFieldHandler} activeDialog={activeDialog} closeDialogHandler={closeDialogHandler} placeholder={rectangle ? rectangle.id : ''}/>
+
+      
       </Container>
+      <Container style={{height:'300px',background:'#fff',border:"1px solid #000",marginTop:'20px'}}>
+         <section  style={{ }}>
+      <div {...getRootProps({className: 'dropzone'})} style={{marginTop:'15px',textAlign:'center',color:'#333',height:'100px',background:'#b2bec3',border:"1px solid #333"}}>
+        <input {...getInputProps()} />
+        <p >Drag 'n' drop some files here, or click to select files</p>
+      </div>
+      <aside>
+        <h4>Files</h4>
+        <ul>{files}</ul>
+      </aside>
+    </section>
+      </Container>
+      </>
     )
 }
 
