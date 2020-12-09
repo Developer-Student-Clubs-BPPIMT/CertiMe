@@ -55,6 +55,7 @@ const CertificateCreator = () => {
         width: 200,
         height: 30,
         fill: 'red',
+        id: null
       })
     }
 
@@ -79,10 +80,10 @@ const CertificateCreator = () => {
           fields: fields
         }
       })
+
       setRectangle(null)
-      
-      let temp = fieldData;
-      setFieldData(temp)
+      // let temp = fieldData;
+      // setFieldData(temp)
       setDialog(false)
     }
 
@@ -98,7 +99,6 @@ const CertificateCreator = () => {
         }
       })
       setRectangle({ ...field, fill: "red"})
-      console.log(rectangle)
     }
 
     const deleteFieldHandler = () => {
@@ -147,12 +147,12 @@ const CertificateCreator = () => {
       a.click();
     }
 
-  const inputHandler = (event) => {
-      console.log(event.target) 
-      const temp = fieldData;
-      temp[event.target.name] = event.target.value;
-      setFieldData(temp)
-    }
+  // const inputHandler = (event) => {
+  //     console.log(event.target) 
+  //     const temp = fieldData;
+  //     temp[event.target.name] = event.target.value;
+  //     setFieldData(temp)
+  //   }
 
     return(
       <>
@@ -166,7 +166,7 @@ const CertificateCreator = () => {
                     <CardContent>
                     <Typography variant="h6">{field.id}</Typography>
                     <Typography variant="body2">Height: {field.height.toFixed(2)} Width: {field.width.toFixed(2)}</Typography>
-                    <input name={field.id} onChange={inputHandler}/>
+                    {/* <input name={field.id} onChange={inputHandler}/> */}
                     </CardContent>
                   </Card>)
               })}
@@ -177,7 +177,8 @@ const CertificateCreator = () => {
               action: rectangle !== null ? openDialogHandler : addFieldHandler,
               disabled: rectangle !== null
             }}/>
-          <SaveFieldDiaglog saveFieldHandler={saveFieldHandler} activeDialog={activeDialog} closeDialogHandler={closeDialogHandler} placeholder={rectangle?.id}/>
+          <SaveFieldDiaglog saveFieldHandler={saveFieldHandler} activeDialog={activeDialog} closeDialogHandler={closeDialogHandler} placeholder={rectangle ? rectangle.id : ''}/>
+
       
       </Container>
       <Container style={{height:'300px',background:'#fff',border:"1px solid #000",marginTop:'20px'}}>

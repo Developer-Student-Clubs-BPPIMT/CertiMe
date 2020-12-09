@@ -16,6 +16,9 @@ const SaveFieldDiaglog = ({ saveFieldHandler, activeDialog, closeDialogHandler, 
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
     React.useEffect(() => {
         fieldChange(placeholder ? placeholder : '')
+        return () => {
+            fieldChange('')
+        }
     }, [placeholder])
     return(
         <Dialog fullScreen={fullScreen}
