@@ -44,6 +44,7 @@ const CertificateCreator = () => {
     
     const openSaveDialogHandler = () => setDialog('save')
     const openPreviewDialogHandler = () => setDialog('preview')
+
     const closeDialogHandler = () => setDialog(false)
 
     const addFieldHandler = () => {
