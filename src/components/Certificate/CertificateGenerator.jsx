@@ -6,6 +6,7 @@ import {
 } from 'react-konva'
 import KonvaImage from '../common/KonvaImage'
 import { useSelector } from 'react-redux'
+import { Card, CardContent, Typography } from '@material-ui/core'
 
 const CertificateGenerator = ({ stageRef, fieldData }) => {
     const [ textLayer, renderTextLayer ] = React.useState(<Layer></Layer>)
@@ -39,6 +40,17 @@ const CertificateGenerator = ({ stageRef, fieldData }) => {
                 </Layer>
                 { textLayer }
             </Stage>
+            { Object.keys(data).map(field_id => {
+                const field = data[field_id] 
+                return (
+                  <Card>
+                    <CardContent>
+                    <Typography variant="h6">{field.id}</Typography>
+                    <Typography variant="body2">Height: {field.height.toFixed(2)} Width: {field.width.toFixed(2)}</Typography>
+                    {/* <input name={field.id} onChange={inputHandler}/> */}
+                    </CardContent>
+                  </Card>)
+              })}
         </div>
     )
 }

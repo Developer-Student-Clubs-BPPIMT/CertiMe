@@ -4,7 +4,6 @@ import {useDropzone} from 'react-dropzone';
 
 const useStyles = makeStyles(theme => ({
     dropzone: {
-        margin: '1em',
         background: 'rgba(200,200,200,0.46)',
         height: '600px',
         width: '800px',

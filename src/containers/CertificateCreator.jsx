@@ -1,5 +1,4 @@
 import React from 'react';
-import {useDropzone} from 'react-dropzone';
 import Dropzone from '../components/common/Dropzone'
 
 import { useDispatch, useSelector } from 'react-redux'
@@ -21,8 +20,9 @@ import DoneIcon from '@material-ui/icons/Done';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import SaveIcon from '@material-ui/icons/Save';
 import SaveFieldDiaglog from '../components/Certificate/SaveFieldDialog';
-import CloseIcon from '@material-ui/icons/Close';
+import PreviewFieldDialog from '../components/Certificate/PreviewFieldDialog'
 import DeleteIcon from '@material-ui/icons/Delete';
+import CreateIcon from '@material-ui/icons/Create';
 
 const CertificateCreator = () => {
     const stageRef = React.useRef(null)
@@ -33,14 +33,17 @@ const CertificateCreator = () => {
     const [ error, setError ] = React.useState('')
     const [ rectangle, setRectangle] = React.useState(null);
     const [ activeDialog, setDialog ] = React.useState(false)
-    const {acceptedFiles, getRootProps, getInputProps} = useDropzone();
     const [imgFile,setImgFile] = React.useState(null);
 
     React.useEffect(() => {
       console.log(imgFile)
     }, [imgFile])
 
-    const openDialogHandler = () => setDialog(true)
+    const editorView = () => setView(true)
+    const previewView = () => setView(false)
+    
+    const openSaveDialogHandler = () => setDialog('save')
+    const openPreviewDialogHandler = () => setDialog('preview')
     const closeDialogHandler = () => setDialog(false)
 
     const addFieldHandler = () => {
@@ -77,8 +80,6 @@ const CertificateCreator = () => {
       })
 
       setRectangle(null)
-      // let temp = fieldData;
-      // setFieldData(temp)
       setDialog(false)
     }
 
@@ -115,14 +116,9 @@ const CertificateCreator = () => {
 
     const primary_options = [
       {
-        title: 'Preview',
-        action: () => setView(!editor),
-        icon: <VisibilityIcon />
-      },
-      {
-        title: 'Save',
-        action: () => {console.log("save")},
-        icon: <SaveIcon />
+        title: editor ? 'Preview' : 'Edit',
+        action: () => editor ? openPreviewDialogHandler() : editorView(),
+        icon: editor ? <VisibilityIcon /> : <CreateIcon />
       },
     ]
 
@@ -144,7 +140,7 @@ const CertificateCreator = () => {
 
     return(
       <>
-      <Container disableGutters style={{display: 'flex', justifyContent: 'center'}}>
+      <Container disableGutters style={{display: 'flex', justifyContent: 'center', margin: '1em auto'}}>
         <div>
             { editor && imgFile && 
               (<CerificateCreator 
@@ -164,31 +160,28 @@ const CertificateCreator = () => {
             { !imgFile && (
               <Dropzone setImage={setImgFile}/>
             )} 
-              
-              
-              
-              
-              
-              
-              { Object.keys(certificateFields).map(field_id => {
-                const field = certificateFields[field_id] 
-                return (
-                  <Card>
-                    <CardContent>
-                    <Typography variant="h6">{field.id}</Typography>
-                    <Typography variant="body2">Height: {field.height.toFixed(2)} Width: {field.width.toFixed(2)}</Typography>
-                    {/* <input name={field.id} onChange={inputHandler}/> */}
-                    </CardContent>
-                  </Card>)
-              })}
+                 
+
             </div>
-          <FloatingBar options={ rectangle !== null ? secondary_options : primary_options} mainOption={{
-              title: 'Add Field',
-              icon: rectangle !== null ? <DoneIcon style={{ color: 'green'}}/> : <AddIcon />,
-              action: rectangle !== null ? openDialogHandler : addFieldHandler,
-              disabled: rectangle !== null
-            }}/>
-          <SaveFieldDiaglog saveFieldHandler={saveFieldHandler} activeDialog={activeDialog} closeDialogHandler={closeDialogHandler} placeholder={rectangle?.id}/>
+          <FloatingBar 
+              options={ rectangle !== null ? secondary_options : primary_options} 
+              mainOption={editor ? 
+                {
+                  title: 'Add Field',
+                  icon: rectangle !== null ? <DoneIcon style={{ color: 'green'}}/> : <AddIcon />,
+                  action: rectangle !== null ? openSaveDialogHandler : addFieldHandler,
+                  disabled: rectangle !== null
+                } : {
+                  title: 'Download',
+                  icon: <SaveIcon />,
+                  action: () => downloadHandler(),
+                  disabled: null
+                }
+            }/>
+
+
+          <SaveFieldDiaglog saveFieldHandler={saveFieldHandler} activeDialog={activeDialog === 'save'} closeDialogHandler={closeDialogHandler} placeholder={rectangle?.id}/>
+          <PreviewFieldDialog setFieldData={setFieldData} activeDialog={activeDialog === 'preview'} viewHandler={previewView} closeDialogHandler={closeDialogHandler} fields={certificateFields}/>
       </Container>
       </>
     )
