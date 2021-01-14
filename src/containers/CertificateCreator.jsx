@@ -1,5 +1,5 @@
 import React from 'react';
-import {useDropzone} from 'react-dropzone';
+import Dropzone from '../components/common/Dropzone'
 
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -8,7 +8,6 @@ import {
   Typography,
   CardContent
 } from '@material-ui/core'
-
 
 import CerificateCreator from '../components/Certificate/CertificateEditor';
 import CertificateGenerator from '../components/Certificate/CertificateGenerator'
@@ -21,8 +20,9 @@ import DoneIcon from '@material-ui/icons/Done';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import SaveIcon from '@material-ui/icons/Save';
 import SaveFieldDiaglog from '../components/Certificate/SaveFieldDialog';
-import CloseIcon from '@material-ui/icons/Close';
+import PreviewFieldDialog from '../components/Certificate/PreviewFieldDialog'
 import DeleteIcon from '@material-ui/icons/Delete';
+import CreateIcon from '@material-ui/icons/Create';
 
 const CertificateCreator = () => {
     const stageRef = React.useRef(null)
@@ -33,19 +33,18 @@ const CertificateCreator = () => {
     const [ error, setError ] = React.useState('')
     const [ rectangle, setRectangle] = React.useState(null);
     const [ activeDialog, setDialog ] = React.useState(false)
-    const {acceptedFiles, getRootProps, getInputProps} = useDropzone();
-    const [imgFile,setImgFile] = React.useState('');
+    const [imgFile,setImgFile] = React.useState(null);
 
-    const files = acceptedFiles.map(file => (
-      
-      <li key={file.path}>
-        
-        {file.path} - {file.size} bytes
-       
-      </li>
-    ));
+    React.useEffect(() => {
+      console.log(imgFile)
+    }, [imgFile])
 
-    const openDialogHandler = () => setDialog(true)
+    const editorView = () => setView(true)
+    const previewView = () => setView(false)
+    
+    const openSaveDialogHandler = () => setDialog('save')
+    const openPreviewDialogHandler = () => setDialog('preview')
+
     const closeDialogHandler = () => setDialog(false)
 
     const addFieldHandler = () => {
@@ -76,14 +75,12 @@ const CertificateCreator = () => {
         type:'UPDATE_CERTIFICATE', 
         data:{ 
           name: 'not-sample', 
-          image: 'assets/template.jpg',
+          image: URL.createObjectURL(imgFile),
           fields: fields
         }
       })
 
       setRectangle(null)
-      // let temp = fieldData;
-      // setFieldData(temp)
       setDialog(false)
     }
 
@@ -94,7 +91,7 @@ const CertificateCreator = () => {
         type:'UPDATE_CERTIFICATE', 
         data:{ 
           name: 'not-sample', 
-          image: 'assets/template.jpg',
+          image: URL.createObjectURL(imgFile),
           fields: fields
         }
       })
@@ -110,7 +107,7 @@ const CertificateCreator = () => {
           type:'UPDATE_CERTIFICATE', 
           data:{ 
             name: 'not-sample', 
-            image: 'assets/template.jpg',
+            image: URL.createObjectURL(imgFile),
             fields: fields
           }
         })
@@ -120,14 +117,9 @@ const CertificateCreator = () => {
 
     const primary_options = [
       {
-        title: 'Preview',
-        action: () => setView(!editor),
-        icon: <VisibilityIcon />
-      },
-      {
-        title: 'Save',
-        action: () => {console.log("save")},
-        icon: <SaveIcon />
+        title: editor ? 'Preview' : 'Edit',
+        action: () => editor ? openPreviewDialogHandler() : editorView(),
+        icon: editor ? <VisibilityIcon /> : <CreateIcon />
       },
     ]
 
@@ -147,51 +139,50 @@ const CertificateCreator = () => {
       a.click();
     }
 
-  // const inputHandler = (event) => {
-  //     console.log(event.target) 
-  //     const temp = fieldData;
-  //     temp[event.target.name] = event.target.value;
-  //     setFieldData(temp)
-  //   }
-
     return(
       <>
-      <Container disableGutters style={{display: 'flex', justifyContent: 'center'}}>
+      <Container disableGutters style={{display: 'flex', justifyContent: 'center', margin: '1em auto'}}>
         <div>
-            { editor ? <CerificateCreator templateURL="assets/template.jpg" rectangleProps={rectangle} rectanglePropsHandler={setRectangle} isSelected={rectangle !== null} certificateFields={certificateFields} updateFieldHandler={updateFieldHandler}/> : <CertificateGenerator stageRef={stageRef} fieldData={fieldData}/> }
-              { Object.keys(certificateFields).map(field_id => {
-                const field = certificateFields[field_id] 
-                return (
-                  <Card>
-                    <CardContent>
-                    <Typography variant="h6">{field.id}</Typography>
-                    <Typography variant="body2">Height: {field.height.toFixed(2)} Width: {field.width.toFixed(2)}</Typography>
-                    {/* <input name={field.id} onChange={inputHandler}/> */}
-                    </CardContent>
-                  </Card>)
-              })}
-            </div>
-          <FloatingBar options={ rectangle !== null ? secondary_options : primary_options} mainOption={{
-              title: 'Add Field',
-              icon: rectangle !== null ? <DoneIcon style={{ color: 'green'}}/> : <AddIcon />,
-              action: rectangle !== null ? openDialogHandler : addFieldHandler,
-              disabled: rectangle !== null
-            }}/>
-          <SaveFieldDiaglog saveFieldHandler={saveFieldHandler} activeDialog={activeDialog} closeDialogHandler={closeDialogHandler} placeholder={rectangle ? rectangle.id : ''}/>
+            { editor && imgFile && 
+              (<CerificateCreator 
+                  templateURL={URL.createObjectURL(imgFile)} 
+                  rectangleProps={rectangle} 
+                  rectanglePropsHandler={setRectangle} 
+                  isSelected={rectangle !== null} 
+                  certificateFields={certificateFields} 
+                  updateFieldHandler={updateFieldHandler}/> 
+            )}
+            { !editor && imgFile && (
+              <CertificateGenerator 
+              stageRef={stageRef} 
+              fieldData={fieldData}/> 
+            )}
 
-      
-      </Container>
-      <Container style={{height:'300px',background:'#fff',border:"1px solid #000",marginTop:'20px'}}>
-         <section  style={{ }}>
-      <div {...getRootProps({className: 'dropzone'})} style={{marginTop:'15px',textAlign:'center',color:'#333',height:'100px',background:'#b2bec3',border:"1px solid #333"}}>
-        <input {...getInputProps()} />
-        <p >Drag 'n' drop some files here, or click to select files</p>
-      </div>
-      <aside>
-        <h4>Files</h4>
-        <ul>{files}</ul>
-      </aside>
-    </section>
+            { !imgFile && (
+              <Dropzone setImage={setImgFile}/>
+            )} 
+                 
+
+            </div>
+          <FloatingBar 
+              options={ rectangle !== null ? secondary_options : primary_options} 
+              mainOption={editor ? 
+                {
+                  title: 'Add Field',
+                  icon: rectangle !== null ? <DoneIcon style={{ color: 'green'}}/> : <AddIcon />,
+                  action: rectangle !== null ? openSaveDialogHandler : addFieldHandler,
+                  disabled: rectangle !== null
+                } : {
+                  title: 'Download',
+                  icon: <SaveIcon />,
+                  action: () => downloadHandler(),
+                  disabled: null
+                }
+            }/>
+
+
+          <SaveFieldDiaglog saveFieldHandler={saveFieldHandler} activeDialog={activeDialog === 'save'} closeDialogHandler={closeDialogHandler} placeholder={rectangle?.id}/>
+          <PreviewFieldDialog setFieldData={setFieldData} activeDialog={activeDialog === 'preview'} viewHandler={previewView} closeDialogHandler={closeDialogHandler} fields={certificateFields}/>
       </Container>
       </>
     )
