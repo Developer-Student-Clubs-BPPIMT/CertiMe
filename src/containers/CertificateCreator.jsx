@@ -1,4 +1,7 @@
 import React from 'react';
+import {useDropzone} from 'react-dropzone';
+import Dropzone from '../components/common/Dropzone'
+
 import { useDispatch, useSelector } from 'react-redux'
 import {
   Container, 
@@ -6,7 +9,6 @@ import {
   Typography,
   CardContent
 } from '@material-ui/core'
-
 
 import CerificateCreator from '../components/Certificate/CertificateEditor';
 import CertificateGenerator from '../components/Certificate/CertificateGenerator'
@@ -31,8 +33,12 @@ const CertificateCreator = () => {
     const [ error, setError ] = React.useState('')
     const [ rectangle, setRectangle] = React.useState(null);
     const [ activeDialog, setDialog ] = React.useState(false)
+    const {acceptedFiles, getRootProps, getInputProps} = useDropzone();
+    const [imgFile,setImgFile] = React.useState(null);
 
-
+    React.useEffect(() => {
+      console.log(imgFile)
+    }, [imgFile])
 
     const openDialogHandler = () => setDialog(true)
     const closeDialogHandler = () => setDialog(false)
@@ -65,7 +71,7 @@ const CertificateCreator = () => {
         type:'UPDATE_CERTIFICATE', 
         data:{ 
           name: 'not-sample', 
-          image: 'assets/template.jpg',
+          image: URL.createObjectURL(imgFile),
           fields: fields
         }
       })
@@ -83,7 +89,7 @@ const CertificateCreator = () => {
         type:'UPDATE_CERTIFICATE', 
         data:{ 
           name: 'not-sample', 
-          image: 'assets/template.jpg',
+          image: URL.createObjectURL(imgFile),
           fields: fields
         }
       })
@@ -99,7 +105,7 @@ const CertificateCreator = () => {
           type:'UPDATE_CERTIFICATE', 
           data:{ 
             name: 'not-sample', 
-            image: 'assets/template.jpg',
+            image: URL.createObjectURL(imgFile),
             fields: fields
           }
         })
@@ -136,17 +142,34 @@ const CertificateCreator = () => {
       a.click();
     }
 
-  // const inputHandler = (event) => {
-  //     console.log(event.target) 
-  //     const temp = fieldData;
-  //     temp[event.target.name] = event.target.value;
-  //     setFieldData(temp)
-  //   }
-
     return(
+      <>
       <Container disableGutters style={{display: 'flex', justifyContent: 'center'}}>
         <div>
-            { editor ? <CerificateCreator templateURL="assets/template.jpg" rectangleProps={rectangle} rectanglePropsHandler={setRectangle} isSelected={rectangle !== null} certificateFields={certificateFields} updateFieldHandler={updateFieldHandler}/> : <CertificateGenerator stageRef={stageRef} fieldData={fieldData}/> }
+            { editor && imgFile && 
+              (<CerificateCreator 
+                  templateURL={URL.createObjectURL(imgFile)} 
+                  rectangleProps={rectangle} 
+                  rectanglePropsHandler={setRectangle} 
+                  isSelected={rectangle !== null} 
+                  certificateFields={certificateFields} 
+                  updateFieldHandler={updateFieldHandler}/> 
+            )}
+            { !editor && imgFile && (
+              <CertificateGenerator 
+              stageRef={stageRef} 
+              fieldData={fieldData}/> 
+            )}
+
+            { !imgFile && (
+              <Dropzone setImage={setImgFile}/>
+            )} 
+              
+              
+              
+              
+              
+              
               { Object.keys(certificateFields).map(field_id => {
                 const field = certificateFields[field_id] 
                 return (
@@ -165,8 +188,9 @@ const CertificateCreator = () => {
               action: rectangle !== null ? openDialogHandler : addFieldHandler,
               disabled: rectangle !== null
             }}/>
-          <SaveFieldDiaglog saveFieldHandler={saveFieldHandler} activeDialog={activeDialog} closeDialogHandler={closeDialogHandler} placeholder={rectangle ? rectangle.id : ''}/>
+          <SaveFieldDiaglog saveFieldHandler={saveFieldHandler} activeDialog={activeDialog} closeDialogHandler={closeDialogHandler} placeholder={rectangle?.id}/>
       </Container>
+      </>
     )
 }
 
