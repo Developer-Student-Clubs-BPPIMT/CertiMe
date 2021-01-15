@@ -8,7 +8,7 @@ import KonvaImage from '../common/KonvaImage'
 import { useSelector } from 'react-redux'
 import { Card, CardContent, Typography } from '@material-ui/core'
 
-const CertificateGenerator = ({ stageRef, fieldData }) => {
+const CertificateGenerator = ({ stageRef, fieldData, setImage }) => {
     const [ textLayer, renderTextLayer ] = React.useState(<Layer></Layer>)
     const certificate = useSelector(state => state.certificate)
     const data = certificate.fields;
@@ -36,7 +36,7 @@ const CertificateGenerator = ({ stageRef, fieldData }) => {
         <div>
             <Stage width={800} height={600} ref={stageRef} >
                 <Layer>
-                    <KonvaImage url={certificate.image}/>
+                    <KonvaImage url={certificate.image} setImage={setImage}/>
                 </Layer>
                 { textLayer }
             </Stage>

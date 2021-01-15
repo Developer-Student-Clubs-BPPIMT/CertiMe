@@ -1,6 +1,6 @@
 import React from 'react';
 import Dropzone from '../components/common/Dropzone'
-
+import downloadKonva from '../components/Certificate/downloadImage'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   Container, 
@@ -8,6 +8,7 @@ import {
   Typography,
   CardContent
 } from '@material-ui/core'
+import useImage from 'use-image'
 
 import CerificateCreator from '../components/Certificate/CertificateEditor';
 import CertificateGenerator from '../components/Certificate/CertificateGenerator'
@@ -23,6 +24,7 @@ import SaveFieldDiaglog from '../components/Certificate/SaveFieldDialog';
 import PreviewFieldDialog from '../components/Certificate/PreviewFieldDialog'
 import DeleteIcon from '@material-ui/icons/Delete';
 import CreateIcon from '@material-ui/icons/Create';
+import CertificateEditor from '../components/Certificate/CertificateEditor';
 
 const CertificateCreator = () => {
     const stageRef = React.useRef(null)
@@ -34,11 +36,10 @@ const CertificateCreator = () => {
     const [ rectangle, setRectangle] = React.useState(null);
     const [ activeDialog, setDialog ] = React.useState(false)
     const [imgFile,setImgFile] = React.useState(null);
-
+    const [ image, setImage ] = React.useState(null)
     React.useEffect(() => {
-      console.log(imgFile)
-    }, [imgFile])
-
+      console.log(image)
+    }, [image])
     const editorView = () => setView(true)
     const previewView = () => setView(false)
     
@@ -133,9 +134,10 @@ const CertificateCreator = () => {
     const downloadHandler = () => {
       console.log("Downloading..")
       let a = document.createElement('A');
-      a.href = stageRef.current.toDataURL()
+      a.href = downloadKonva(image, certificateFields, fieldData)
       a.download = 'certificate.png'
       a.click();
+      a.remove()
     }
 
     return(
@@ -143,7 +145,7 @@ const CertificateCreator = () => {
       <Container disableGutters style={{display: 'flex', justifyContent: 'center', margin: '1em auto'}}>
         <div>
             { editor && imgFile && 
-              (<CerificateCreator 
+              (<CertificateEditor 
                   templateURL={URL.createObjectURL(imgFile)} 
                   rectangleProps={rectangle} 
                   rectanglePropsHandler={setRectangle} 
@@ -154,7 +156,8 @@ const CertificateCreator = () => {
             { !editor && imgFile && (
               <CertificateGenerator 
               stageRef={stageRef} 
-              fieldData={fieldData}/> 
+              fieldData={fieldData}
+              setImage={setImage}/> 
             )}
 
             { !imgFile && (

@@ -1,5 +1,14 @@
 {
   "projects": {
-    "default": "certime-be5df"
+    "default": "certime-dscbppimt"
+  },
+  "targets": {
+    "certime-dscbppimt": {
+      "hosting": {
+        "certigen": [
+          "certigen"
+        ]
+      }
+    }
   }
 }
