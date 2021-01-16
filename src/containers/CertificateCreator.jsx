@@ -4,13 +4,7 @@ import downloadKonva from '../components/Certificate/downloadImage'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   Container, 
-  Card,
-  Typography,
-  CardContent
 } from '@material-ui/core'
-import useImage from 'use-image'
-
-import CerificateCreator from '../components/Certificate/CertificateEditor';
 import CertificateGenerator from '../components/Certificate/CertificateGenerator'
 import FloatingBar from '../components/common/FloatingBar/FloatingBar';
 
