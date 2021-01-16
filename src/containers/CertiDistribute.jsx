@@ -44,6 +44,9 @@ const CertiDistribute = () => {
         <Container>
             { !file && <input type="file"  onChange={(e) => setFile(e.target.files[0])}/> }
             { !isLoading && data && (
+                <Container>
+                    <div>Rows: {data.length}</div>
+                    <div>Keys: { headers.join()}</div>
                     <TableContainer component={Paper}>
                     <Table aria-label="simple table">
                       <TableHead>
@@ -77,6 +80,7 @@ const CertiDistribute = () => {
                         </TableFooter>
                     </Table>
                   </TableContainer>
+                  </Container>
             )}
         </Container>
     )
